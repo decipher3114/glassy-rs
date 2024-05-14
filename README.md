@@ -3,6 +3,8 @@
 A simple CLI tool to apply glass-like overlay effect to images.
 It adds variable blur and noise to image as overlay to give them a glassy look.
 
+## Usage
+
 ```
 ~ $ glassy -h
 
@@ -25,3 +27,11 @@ Options:
   -V, --version
           Print version
 ```
+
+## Sample Images
+
+![Original](examples/Sample.jpg) | ![Low](examples/Sample_low.jpg)
+--- | ---
+**Original Image** | **Low Effect Strength**
+![Medium](examples/Sample_medium.jpg) | ![High](examples/Sample_high.jpg)
+**Medium Effect Strength** | **High Effect Strength**
