@@ -1,7 +1,7 @@
 use crate::utils::{blur::BlurOpts, noise::NoiseOpts};
-use std::{cmp::min, fmt};
 use clap::ValueEnum;
 use image::DynamicImage;
+use std::{cmp::min, fmt};
 
 #[derive(ValueEnum, Debug, Copy, Clone)]
 pub enum EffectStrength {

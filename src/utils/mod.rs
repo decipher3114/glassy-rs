@@ -1,33 +1,30 @@
-use crate::error;
+use crate::error::Result;
+
+use self::{blur::add_blur, noise::add_noise};
 use image::io::Reader;
+use log::info;
 use std::path::Path;
 
-pub mod cli;
 mod blur;
-mod noise;
+pub mod cli;
 mod effect;
+mod noise;
 
-pub fn proc_image(cli_args: cli::CliArgs) -> error::Result<()> {
-
+pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
     let path = Path::new(&cli_args.path);
-
-    log::info!("Reading File: \"{}\"", path.display());
+    info!("Reading File: \"{}\"", path.display());
 
     let img = Reader::open(path)?.decode()?;
-
     let (blur_opts, noise_opts) = cli_args.effect_strength.value(&img);
 
-    log::info!("Applying Blur...");
+    info!("Applying Blur...");
 
-    let img = blur::add_blur(img, blur_opts)?;
-
-    let img = if ! cli_args.no_grain {
-        
-        log::info!("Applying Noise...");
-
-        noise::add_noise(img, noise_opts)?
-    } else {
+    let img = add_blur(img, blur_opts);
+    let img = if cli_args.no_grain {
         img
+    } else {
+        info!("Applying Noise...");
+        add_noise(img, noise_opts)
     };
 
     let output_path = format!(
@@ -37,11 +34,11 @@ pub fn proc_image(cli_args: cli::CliArgs) -> error::Result<()> {
         path.extension().unwrap().to_str().unwrap_or("png")
     );
 
-    log::info!("Saving Image: {output_path}");
+    info!("Saving Image: {output_path}");
 
     img.save(output_path)?;
 
-    log::info!("Operation Completed !!");
+    info!("Operation Completed !!");
 
     Ok(())
 }
