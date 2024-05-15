@@ -13,3 +13,11 @@ clap = { version = "4.5", features = ["derive"] }
 libblur = "0.9"
 log = "0.4"
 env_logger = "0.11"
+
+[profile.release]
+lto = "fat"
+opt-level = 3
+codegen-units = 1
+rpath = true
+debug = false
+panic = "abort"
