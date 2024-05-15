@@ -1,8 +1,10 @@
-use crate::error::Result;
 use self::{blur::add_blur, noise::add_noise};
+use crate::error::Result;
 use image::io::Reader;
 use log::info;
 use std::{fs::DirBuilder, path::Path};
+
+const DEFAULT_FALLBACK_OUTPUT_DIR: &str = "./";
 
 mod blur;
 pub mod cli;
@@ -27,6 +29,15 @@ pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
     };
 
     let output_path = if let Some(output) = cli_args.output {
+        // Create the output directory if it doesn't exist
+        let output_path = Path::new(output.as_str());
+        if !output_path.exists() {
+            DirBuilder::new().recursive(true).create(
+                output_path
+                    .parent()
+                    .unwrap_or(Path::new(DEFAULT_FALLBACK_OUTPUT_DIR)),
+            )?;
+        }
         output
     } else {
         format!(
@@ -37,14 +48,6 @@ pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
             path.extension().unwrap().to_str().unwrap_or("png")
         )
     };
-
-    // Create the output directory if it doesn't exist
-    let output = Path::new(output_path.as_str());
-    if !output.exists() {
-        DirBuilder::new()
-            .recursive(true)
-            .create(output.parent().unwrap())?;
-    }
 
     info!("Saving Image: {output_path}");
 
