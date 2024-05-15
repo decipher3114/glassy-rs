@@ -1,9 +1,9 @@
-use crate::error::Result;
+use anyhow::Result;
 
 use self::{blur::add_blur, noise::add_noise};
 use image::io::Reader;
 use log::info;
-use std::path::Path;
+use std::{fs::DirBuilder, path::Path};
 
 mod blur;
 pub mod cli;
@@ -27,12 +27,24 @@ pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
         add_noise(img, noise_opts)
     };
 
-    let output_path = format!(
-        "{}_{}.{}",
-        path.file_stem().unwrap().to_str().unwrap_or("Image"),
-        cli_args.effect_strength,
-        path.extension().unwrap().to_str().unwrap_or("png")
-    );
+    let output_path = if let Some(output) = cli_args.output {
+        output
+    } else {
+        format!(
+            "{}_{}.{}",
+            path.file_stem().unwrap().to_str().unwrap_or("Image"),
+            cli_args.effect_strength,
+            path.extension().unwrap().to_str().unwrap_or("png")
+        )
+    };
+
+    // Create the output directory if it doesn't exist
+    let output = Path::new(output_path.as_str());
+    if !output.exists() {
+        DirBuilder::new()
+            .recursive(true)
+            .create(output.parent().unwrap())?;
+    }
 
     info!("Saving Image: {output_path}");
 
