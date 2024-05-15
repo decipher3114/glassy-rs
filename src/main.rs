@@ -1,4 +1,4 @@
-use crate::utils::{cli::CliArgs, proc_image};
+use crate::utils::cli::CliArgs;
 use clap::Parser;
 use log::error;
 use std::process::exit;
@@ -11,7 +11,7 @@ fn main() {
 
     cli_args.init_logger();
 
-    if let Err(e) = proc_image(cli_args) {
+    if let Err(e) = cli_args.proc_image() {
         error!("{e}");
         exit(1);
     };

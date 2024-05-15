@@ -1,8 +1,15 @@
-use crate::utils::effect::EffectStrength;
+use crate::{
+    error::Result,
+    utils::{blur::add_blur, effect::EffectStrength, noise::add_noise},
+};
 use clap::{Parser, ValueHint};
 use env_logger::Builder;
-use log::{Level, LevelFilter};
-use std::io::Write;
+use image::io::Reader;
+use log::{info, Level, LevelFilter};
+use std::{fs::DirBuilder, io::Write, path::Path};
+
+const DEFAULT_FALLBACK_OUTPUT_DIR: &str = "./";
+
 /// A simple CLI tool to apply glass-like overlay effect to images
 #[derive(Debug, Parser)]
 #[command(version, long_about = None)]
@@ -67,5 +74,52 @@ impl CliArgs {
             })
             .filter(None, level)
             .init();
+    }
+
+    pub fn proc_image(self) -> Result<()> {
+        let path = Path::new(&self.path);
+        info!("Reading File: \"{}\"", path.display());
+
+        let img = Reader::open(path)?.decode()?;
+        let (blur_opts, noise_opts) = self.effect_strength.value(&img);
+
+        info!("Applying Blur...");
+
+        let img = add_blur(img, blur_opts);
+        let img = if self.no_grain {
+            img
+        } else {
+            info!("Applying Noise...");
+            add_noise(img, noise_opts)
+        };
+
+        let output_path = if let Some(output) = self.output {
+            // Create the output directory if it doesn't exist
+            let output_path = Path::new(output.as_str());
+            if !output_path.exists() {
+                DirBuilder::new().recursive(true).create(
+                    output_path
+                        .parent()
+                        .unwrap_or(Path::new(DEFAULT_FALLBACK_OUTPUT_DIR)),
+                )?;
+            }
+            output
+        } else {
+            format!(
+                "{}/{}_{}.{}",
+                path.parent().unwrap().to_str().unwrap_or("."),
+                path.file_stem().unwrap().to_str().unwrap_or("Image"),
+                self.effect_strength,
+                path.extension().unwrap().to_str().unwrap_or("png")
+            )
+        };
+
+        info!("Saving Image: {output_path}");
+
+        img.save(output_path)?;
+
+        info!("Operation Completed !!");
+
+        Ok(())
     }
 }
