@@ -25,6 +25,10 @@ pub struct CliArgs {
     #[arg(long = "no-grain")]
     pub no_grain: bool,
 
+    /// Specify output file path
+    #[arg(short, long, value_name = "PATH", value_hint = ValueHint::FilePath)]
+    pub output: Option<String>,
+
     /// Explain what is being done
     #[arg(short, long)]
     pub verbose: bool,
