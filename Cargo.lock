@@ -435,6 +435,7 @@ dependencies = [
 name = "glassy"
 version = "0.1.2"
 dependencies = [
+ "anyhow",
  "clap",
  "env_logger",
  "image",

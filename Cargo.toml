@@ -5,6 +5,7 @@ version = "0.1.2"
 edition = "2021"
 
 [dependencies]
+anyhow = "1"
 image = "0.25"
 imageproc = "0.24"
 thiserror = "1.0"
