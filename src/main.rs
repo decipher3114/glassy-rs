@@ -12,7 +12,6 @@ fn main() {
 
     logger::init_logger(&cli_args);
 
-    // what the fuck
     if let Err(e) = proc_image(cli_args) {
         error!("{e}");
         exit(1);
