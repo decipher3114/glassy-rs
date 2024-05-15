@@ -4,11 +4,11 @@ use log::{Level, LevelFilter};
 use std::io::Write;
 
 pub fn init_logger(cli_args: &CliArgs) {
-    let mut level = log::LevelFilter::Error;
-
-    if cli_args.verbose {
-        level = LevelFilter::Info;
-    }
+    let level = if cli_args.verbose {
+        LevelFilter::Error
+    } else {
+        LevelFilter::Info
+    };
 
     Builder::new()
         .format(|buf, record| {
