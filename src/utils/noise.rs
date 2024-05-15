@@ -1,4 +1,4 @@
-use image::{DynamicImage, ImageError};
+use image::DynamicImage;
 use imageproc::noise::gaussian_noise;
 
 pub struct NoiseOpts {
@@ -7,11 +7,11 @@ pub struct NoiseOpts {
     pub seed: u64,
 }
 
-pub fn add_noise(img: DynamicImage, noise_opts: NoiseOpts) -> Result<DynamicImage, ImageError> {
-    Ok(DynamicImage::from(gaussian_noise(
+pub fn add_noise(img: DynamicImage, noise_opts: NoiseOpts) -> DynamicImage {
+    DynamicImage::from(gaussian_noise(
         &DynamicImage::into_rgb8(img),
         noise_opts.mean,
         noise_opts.std_dev,
-        noise_opts.seed
-    )))
+        noise_opts.seed,
+    ))
 }
