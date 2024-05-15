@@ -1,11 +1,13 @@
+use image::ImageError as ImgError;
+use std::{io::Error as IoError, result::Result as StdResult};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("No such file or directory")]
-    FileNotFound(#[from] std::io::Error),
+    FileNotFound(#[from] IoError),
     #[error("Invalid image file")]
-    DecodeError(#[from] image::ImageError),
+    DecodeError(#[from] ImgError),
 }
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = StdResult<T, Error>;

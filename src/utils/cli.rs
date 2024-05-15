@@ -1,5 +1,5 @@
 use crate::utils::effect::EffectStrength;
-use clap::Parser;
+use clap::{Parser, ValueHint};
 
 /// A simple CLI tool to apply glass-like overlay effect to images
 #[derive(Debug, Parser)]
@@ -8,7 +8,7 @@ pub struct CliArgs {
     /// Path to image file
     #[arg(
         value_name = "PATH",
-        value_hint = clap::ValueHint::FilePath
+        value_hint = ValueHint::FilePath
     )]
     pub path: String,
 
@@ -22,9 +22,7 @@ pub struct CliArgs {
     pub effect_strength: EffectStrength,
 
     /// Apply effect without grain
-    #[arg(
-        long="no-grain"
-    )]
+    #[arg(long = "no-grain")]
     pub no_grain: bool,
 
     /// Explain what is being done

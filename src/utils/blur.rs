@@ -1,11 +1,11 @@
-use image::{RgbImage, DynamicImage, ImageError};
+use image::{DynamicImage, RgbImage};
 use libblur::{fast_gaussian, FastBlurChannels};
 
 pub struct BlurOpts {
     pub sigma: f32,
 }
 
-pub fn add_blur(img: DynamicImage, blur_opts: BlurOpts) -> Result<DynamicImage, ImageError> {
+pub fn add_blur(img: DynamicImage, blur_opts: BlurOpts) -> DynamicImage {
     let height: u32 = img.height();
 
     let width: u32 = img.width();
@@ -23,5 +23,5 @@ pub fn add_blur(img: DynamicImage, blur_opts: BlurOpts) -> Result<DynamicImage, 
 
     let final_img = RgbImage::from_raw(width, height, raw_img).unwrap();
 
-    Ok(DynamicImage::from(final_img))
+    DynamicImage::from(final_img)
 }
