@@ -1,5 +1,4 @@
-use anyhow::Result;
-
+use crate::error::Result;
 use self::{blur::add_blur, noise::add_noise};
 use image::io::Reader;
 use log::info;
