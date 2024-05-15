@@ -30,7 +30,8 @@ pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
         output
     } else {
         format!(
-            "{}_{}.{}",
+            "{}/{}_{}.{}",
+            path.parent().unwrap().to_str().unwrap_or("."),
             path.file_stem().unwrap().to_str().unwrap_or("Image"),
             cli_args.effect_strength,
             path.extension().unwrap().to_str().unwrap_or("png")
