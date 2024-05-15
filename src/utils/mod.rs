@@ -39,10 +39,12 @@ pub fn proc_image(cli_args: cli::CliArgs) -> Result<()> {
     };
 
     // Create the output directory if it doesn't exist
-    let output = output_path.as_str();
-    DirBuilder::new()
-        .recursive(true)
-        .create(Path::new(output).parent().unwrap())?;
+    let output = Path::new(output_path.as_str());
+    if !output.exists() {
+        DirBuilder::new()
+            .recursive(true)
+            .create(output.parent().unwrap())?;
+    }
 
     info!("Saving Image: {output_path}");
 
